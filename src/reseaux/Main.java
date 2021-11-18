@@ -19,74 +19,77 @@ import java.net.ServerSocket;
 import java.net.Socket;	
 
 public class Main {
+	static InetAddress address;
+	static ServerSocket serverSocket = null;
+	static Socket socketOfServer = null;
+	static Socket clientSocket =null;
+	static Socket echoSocket = null;
+	static PrintWriter out= null;
+    static BufferedReader in=null;
 	
-	public static void main(String[] args) {
+	
+	public static void Start(int port) throws IOException {
+		serverSocket = new ServerSocket(port);
+		
+		System.out.println("Server is waiting to accept user...");
+
+        // Accept client connection request
+        // Get new Socket at Server.    
+        clientSocket = serverSocket.accept();
+        
+        
+        
+        
+        System.out.println("Accept a client!");
+        
+        //reception msg
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));      
+        String userInput;
+        while((userInput=in.readLine()) != null) {
+      	  System.out.println(userInput);
+        };
+        
+        String ip=clientSocket.getInetAddress().getHostAddress();
+        System.out.println(ip);
+        
+        
+        //Envoie msg
+        echoSocket= new Socket(ip,4445);
+        out = new PrintWriter(echoSocket.getOutputStream(),true);
+        
+        
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(echoSocket.getOutputStream()));
+        		
+        bw.write("Salut");
+        bw.flush();
+        bw.close();
+        
+        
+        Stop();
+	}
+	
+	public static void Stop() throws IOException {
+		out.close();
+        in.close();
+        
+        echoSocket.close();
+	};
+	
+		
+	
+	public static void main(String[] args) throws IOException {
 		String host="192.168.43.4";
-		InetAddress address;
-		ServerSocket serverSocket = null;
-		Socket socketOfServer = null;
+		//address=InetAddress.getByName(host);
+		System.out.println(InetAddress.getLocalHost().getHostAddress());
+		//System.out.println(host+ " "+ address.getHostAddress());
+		Start(4444);
 		
-
-		try {
-			//address=InetAddress.getByName(host);
-			System.out.println(InetAddress.getLocalHost().getHostAddress());
-			//System.out.println(host+ " "+ address.getHostAddress());
-		}
-		catch(UnknownHostException e) {
-			e.printStackTrace();
-		}
 		
-		try {
-			serverSocket = new ServerSocket(4444);
-			
-		}
-		catch(IOException e) {
-			System.out.println("Couldn't listen on port 4444");
-			System.exit(-1);
-		}
 		
-		Socket clientSocket =null;
-		try {
-	           System.out.println("Server is waiting to accept user...");
-
-	           // Accept client connection request
-	           // Get new Socket at Server.    
-	           clientSocket = serverSocket.accept();
-	           System.out.println("Accept a client!");
-
+		
+		
 	          
-	           Socket echoSocket = null;
-	           PrintWriter out= null;
-	           BufferedReader in=null;
-	           
-	           
-	           try {
-	        	   echoSocket= new Socket("127.0.1.1",4444);
-	        	   out = new PrintWriter(echoSocket.getOutputStream(),true);
-	        	   in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
+	        	  
 	        	   
-	        	   
-	           }catch(UnknownHostException e) {
-	        	   System.err.println("Don't know about host taranis.");
-	        	   System.exit(-1);
-	           }catch(IOException e) {
-	        	   System.err.println("Couldn't get I/O for "+"the connection to taranis");
-	        	   System.exit(-1);
-	           }
-
-	          BufferedReader strIn=new BufferedReader(new InputStreamReader(System.in));
-
-	          String userInput;
-	          while((userInput=strIn.readLine()) != null) {
-	        	  System.out.println(userInput);
-	          
-	          }
-	          
-	          
-	       } catch (IOException e) {
-	           System.out.println(e);
-	           e.printStackTrace();
-	       }
-	       System.out.println("Sever stopped!");
-	   }
+	} 
 	}
