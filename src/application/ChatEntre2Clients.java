@@ -19,14 +19,15 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
 
+@SuppressWarnings("deprecation")
 public class ChatEntre2Clients implements Observer  {
 
     //127.0.1.1
 	public Mod�le mdl;
     private ServerSocket serveurSocket;
     String s;
-    public final Scanner sc = new Scanner(mdl.getText());//pour lire à partir du clavier
-   
+    //public final Scanner sc = new Scanner(mdl.getText());//pour lire à partir du clavier
+    public final Scanner sc = new Scanner(System.in);
     private String ipServeur;
     private boolean receptKey;
     private AESKey aes;
@@ -48,15 +49,17 @@ public class ChatEntre2Clients implements Observer  {
     }
 
     public boolean isServeur() {
-        return true ;//ipServeur.isEmpty();
+    	
+        return ipServeur.isEmpty();
     }
 
     private void ajoutIPServeur() {
-        System.out.println("A quelle IP voulez-vous communiquer ? ");
+    	ipServeur=this.mdl.main.AskClientServeur();
+        /*System.out.println("A quelle IP voulez-vous communiquer ? ");
         System.out.println("(laissez vide pour devenir l'hôte (serveur)");
         System.out.print(" >> ");
 
-        ipServeur = sc.nextLine();
+        ipServeur = sc.nextLine();*/
     }
 
     private void creationClient() throws IOException {
@@ -79,7 +82,9 @@ public class ChatEntre2Clients implements Observer  {
             while(true){
                 String msg = sc.nextLine();
                 try {
-                    out.println(new String(getAes().encodeString(InetAddress.getLocalHost().getHostAddress() + " >> " + msg)));
+                	String receive = new String(getAes().encodeString(InetAddress.getLocalHost().getHostAddress() + " >> " + msg));
+                    this.mdl.receiveMsgTCP(receive);
+                    out.println(new String(msg));
                     out.flush();
                 }
                 catch (UnknownHostException e) {
@@ -243,10 +248,10 @@ public class ChatEntre2Clients implements Observer  {
     }
 
     public ChatEntre2Clients() {
-    	creationServeur();
+    	
     	
         repertoireIP = new HashMap<>();
-        /*ajoutIPServeur();
+        ajoutIPServeur();
         try {
             if(isServeur())
                 creationServeur();
@@ -254,11 +259,11 @@ public class ChatEntre2Clients implements Observer  {
             	creationClient();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public static void main(String[] args) {
-        new ChatEntre2Clients();
+        //new ChatEntre2Clients();
     }
 	@Override
 	public void update(Observable o, Object arg) {

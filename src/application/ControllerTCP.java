@@ -4,6 +4,7 @@ import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -38,9 +39,20 @@ public class ControllerTCP {
 
     @FXML
     void PressBtn(MouseEvent event) {
-    	System.out.println(text.getText());
+    	Label l =new Label("Vous : "+text.getText());
+    	vBoxAffichage.getChildren().add(l);
+    	//System.out.println(text.getText());
     	this.mdl.sendMsgTCP(text.getText());
     }
+
+
+
+	public void showNewMsg(String msg) {
+		Label l =new Label("Vous : "+text.getText());
+    	vBoxAffichage.getChildren().add(l);
+		// TODO Auto-generated method stub
+		
+	}
 
 
 }

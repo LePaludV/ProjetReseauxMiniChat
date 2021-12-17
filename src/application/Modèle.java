@@ -11,6 +11,7 @@ public class Modèle extends Observable {
 	public Main main;
 	public ChatEntre2Clients tcp;
 	private String txt;
+	public DatagramClient udp;
 	
 	public Modèle (Main main) {
 		
@@ -19,16 +20,26 @@ public class Modèle extends Observable {
 
 	public void gototcp() throws IOException {
 		System.out.println("reçu TCP Modele");
+
 		
+		this.main.loadTCP();
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void gotoudp() throws IOException {
+		System.out.println("reçu UDP Modele");
+		
+
 		Task<Void> task = new Task<Void>() {
 
 			
 
 			@Override
-			protected Void call() throws Exception {
+			public Void call() throws Exception {
 			
+				udp = new DatagramClient();
 				
-				tcp = new ChatEntre2Clients();
 				return null;
 			
 				
@@ -38,15 +49,7 @@ public class Modèle extends Observable {
 		};
 		new Thread(task).start();
 		
-		
-		this.main.loadTCP(tcp);
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void gotoudp() {
-		System.out.println("reçu UDP Modele");
-		this.main.loadUDP();
+		this.main.loadUDP(udp);
 		// TODO Auto-generated method stub
 		
 	}
@@ -58,6 +61,7 @@ public class Modèle extends Observable {
 	}
 
 	public void sendMsgTCP(String text) {
+		System.out.println(text);
 		setChanged();
 		notifyObservers(text);
 		// TODO Auto-generated method stub
@@ -69,4 +73,13 @@ public class Modèle extends Observable {
 		// TODO Auto-generated method stub
 		return txt;
 	}
+
+	public void receiveMsgTCP(String msg) {
+		System.out.println(msg);
+		this.main.ctrlTCP.showNewMsg(msg);
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 }

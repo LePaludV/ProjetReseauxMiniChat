@@ -31,7 +31,7 @@ public class Controller {
     }
 
     @FXML
-    void goToUDP(ActionEvent event) {
+    void goToUDP(ActionEvent event) throws IOException {
     	System.out.println("Going to UDP Chat");
     	this.mdl.gotoudp();
 
